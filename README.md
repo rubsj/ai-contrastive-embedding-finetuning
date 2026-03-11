@@ -7,7 +7,7 @@ I fine-tuned `all-MiniLM-L6-v2` on 1,475 dating profile pairs and flipped Spearm
 **Sample output:** [`eval/comparison_report.html`](eval/comparison_report.html) (self-contained HTML with 8 embedded charts. Clone the repo and open locally.)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rubsj/ai-portfolio/main/03-fine-tuning-guardrails/eval/visualizations/comparison/cosine_distributions.png" alt="Before/After Fine-Tuning: Cosine Similarity Distributions" width="800"/>
+  <img src="https://raw.githubusercontent.com/rubsj/ai-contrastive-embedding-finetuning/main/eval/visualizations/comparison/cosine_distributions.png" alt="Before/After Fine-Tuning: Cosine Similarity Distributions" width="800"/>
 </p>
 
 Cosine similarity distributions before (left) and after (right) fine-tuning. Baseline distributions overlap completely. Fine-tuned distributions separate.
@@ -41,13 +41,13 @@ LoRA's post-training evaluation produced baseline-identical metrics. The trainin
 This is a silent failure. The model runs without errors but produces unmodified embeddings. Standard fine-tuning (which modifies weights in-place) does not have this problem.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rubsj/ai-portfolio/main/03-fine-tuning-guardrails/eval/visualizations/comparison/classification_metrics.png" alt="Baseline vs Fine-Tuned: All 8 Metrics" width="700"/>
+  <img src="https://raw.githubusercontent.com/rubsj/ai-contrastive-embedding-finetuning/main/eval/visualizations/comparison/classification_metrics.png" alt="Baseline vs Fine-Tuned: All 8 Metrics" width="700"/>
 </p>
 
 ### Embedding Space Before/After
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rubsj/ai-portfolio/main/03-fine-tuning-guardrails/eval/visualizations/comparison/umap.png" alt="UMAP: Embedding Space Before/After Fine-Tuning" width="700"/>
+  <img src="https://raw.githubusercontent.com/rubsj/ai-contrastive-embedding-finetuning/main/eval/visualizations/comparison/umap.png" alt="UMAP: Embedding Space Before/After Fine-Tuning" width="700"/>
 </p>
 
 Baseline embeddings overlap with no compatibility structure. Fine-tuned embeddings separate cleanly.
@@ -116,8 +116,8 @@ No CUDA. MacBook Air M2 means CPU-only training. Training times (~1 minute) are 
 ## Quick Start
 
 ```bash
-git clone https://github.com/rubsj/ai-portfolio.git
-cd ai-portfolio/03-fine-tuning-guardrails
+git clone https://github.com/rubsj/ai-contrastive-embedding-finetuning.git
+cd ai-contrastive-embedding-finetuning
 uv sync
 ```
 
@@ -143,6 +143,6 @@ Open `eval/comparison_report.html` to see results.
 
 ---
 
-Part of [AI Portfolio Sprint](../README.md). 9 projects, 8 weeks.
+Part of [AI Portfolio Sprint](https://github.com/rubsj/ai-portfolio). 9 projects, 8 weeks.
 
-Built by **Ruby Jha** · [Portfolio Site](https://rubyjha.dev) · [LinkedIn](https://linkedin.com/in/jharuby) · [GitHub](https://github.com/rubsj/ai-portfolio)
+Built by **Ruby Jha** · [Portfolio Site](https://rubyjha.dev) · [LinkedIn](https://linkedin.com/in/jharuby) · [GitHub](https://github.com/rubsj/ai-contrastive-embedding-finetuning)
