@@ -11,10 +11,10 @@ Comparison of false positive counts across baseline, standard fine-tuned, and Lo
 | dealbreaker |       45 |        0 |   45 |         100.0% |            0.0% |
 | incompatible |       45 |        0 |   45 |         100.0% |            0.0% |
 | llm_judged_incompatible |       28 |        0 |   28 |         100.0% |            0.0% |
-| subtle_mismatch |        3 |        2 |    3 |          33.3% |            0.0% |
+| subtle_mismatch |        3 |        3 |    3 |           0.0% |            0.0% |
 
 ## Overall Totals
 
 - **Baseline**: 137 false positives
-- **Standard**: 3 false positives (97.8% reduction)
+- **Standard**: 4 false positives (97.1% reduction)
 - **LoRA**: 137 false positives (0.0% reduction)
