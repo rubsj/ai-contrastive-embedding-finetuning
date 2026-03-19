@@ -2,32 +2,15 @@
   "model_type": "standard",
   "epochs": 4,
   "batch_size": 16,
-  "learning_rate": 2e-05,
+  "learning_rate": 0.00002,
   "warmup_steps": 100,
   "evaluation_steps": 500,
-  "training_time_seconds": 61.43,
-  "final_spearman": 0.8528996822060586,
-  "spearman_history": [
-    [
-      1,
-      0.770770375356907
-    ],
-    [
-      2,
-      0.849627280281068
-    ],
-    [
-      3,
-      0.8518621908993443
-    ],
-    [
-      4,
-      0.8528996822060586
-    ]
-  ],
-  "output_path": "training/model/standard_model",
-  "trainable_parameters": 22713216,
-  "total_parameters": 22713216,
+  "training_time_seconds": 0.000080108642578125,
+  "final_spearman": 0.0,
+  "spearman_history": [],
+  "output_path": "/private/var/folders/md/pd2tk_kj4hs9w7z03v57p_640000gn/T/pytest-of-rubyjha/pytest-2/test_train_cleans_up_memory0/model",
+  "trainable_parameters": 1500,
+  "total_parameters": 1500,
   "lora_rank": null,
   "lora_alpha": null,
   "lora_dropout": null,
