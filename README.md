@@ -143,6 +143,6 @@ Open `eval/comparison_report.html` to see results.
 
 ---
 
-Part of [AI Portfolio Sprint](https://github.com/rubsj/ai-portfolio). 9 projects, 8 weeks.
+Part of a [9-project AI engineering sprint](https://github.com/rubsj/ai-portfolio). Built Feb–May 2026.
 
-Built by **Ruby Jha** · [Portfolio Site](https://rubyjha.dev) · [LinkedIn](https://linkedin.com/in/jharuby) · [GitHub](https://github.com/rubsj/ai-contrastive-embedding-finetuning)
+Built by **Ruby Jha** · [LinkedIn](https://linkedin.com/in/jharuby) · [GitHub](https://github.com/rubsj/ai-portfolio)
