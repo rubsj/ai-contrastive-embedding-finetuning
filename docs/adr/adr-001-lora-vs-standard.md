@@ -39,19 +39,20 @@ This project evaluates both to understand the efficiency-performance tradeoff on
 
 | Metric | Baseline | Standard | LoRA | LoRA % of Standard |
 |--------|----------|----------|------|---------------------|
-| **Spearman Correlation** | -0.219 | **0.853** | 0.827 (training) | 96.9% |
-| **Compatibility Margin** | -0.083 | **+0.940** | — | — |
-| **Cohen's d (effect size)** | -0.419 | **7.727** | — | — |
-| **AUC-ROC** | 0.373 | **0.994** | — | — |
-| **Best F1** | 0.698 | **0.991** | — | — |
+| **Spearman Correlation** | -0.219 | **0.852** | 0.820 | 96.2% |
+| **Compatibility Margin** | -0.083 | **+0.941** | +0.748 | 79.5% |
+| **Cohen's d (effect size)** | -0.419 | **7.451** | 3.510 | 47.1% |
+| **AUC-ROC** | 0.373 | **0.993** | 0.974 | 98.1% |
+| **Best F1** | 0.698 | **0.988** | 0.946 | 95.8% |
+| **Cluster Purity** | 0.839 | **0.986** | 0.912 | 92.5% |
 | **Training Time (M2 Mac)** | — | 45 min | 38 min | 84% |
-| **Trainable Parameters** | 0 | 22.7M (100%) | 294K (1.3%) | 1.3% |
+| **Trainable Parameters** | 0 | 22.7M (100%) | 73K (0.32%) | 0.32% |
 
 **Key Findings**:
 1. ✅ **Both approaches fix inverted embeddings** — Spearman flips from -0.22 → 0.85
-2. ✅ **LoRA achieves 96.9% of standard performance** with 1.3% of trainable params
+2. ✅ **LoRA achieves 96.2% of standard Spearman** with 0.32% of trainable params
 3. ✅ **LoRA trains 16% faster** (38 min vs. 45 min) due to fewer backward passes
-4. ⚠️ **LoRA post-training evaluation incomplete** — Metrics pending, but training Spearman is reliable
+4. ✅ **Full 8-metric post-training evaluation complete** for both models
 
 ## Alternatives Considered
 
@@ -156,4 +157,4 @@ const JobEncoder = withJobAdapter(BaseModel);
 ## Update Log
 
 - **2026-02-20**: Initial version with Day 2 training results
-- **Pending**: Add final LoRA post-training evaluation metrics when available
+- **2026-03-29**: Added full LoRA post-training evaluation metrics after fixing adapter merge bug in `generate_finetuned_embeddings`

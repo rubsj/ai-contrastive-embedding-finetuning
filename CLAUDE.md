@@ -385,14 +385,17 @@ Do NOT re-debate architecture — follow the plan.
 
 | Metric | Baseline | Standard | LoRA |
 |--------|----------|----------|------|
-| Spearman | -0.219 | 0.853 | 0.827 |
-| Margin | -0.083 | 0.903 | 0.870 |
-| Cohen's d | -0.419 | 2.5 | 2.3 |
-| AUC-ROC | 0.185 | 0.954 | 0.944 |
+| Spearman | -0.219 | 0.852 | 0.820 |
+| Margin | -0.083 | 0.941 | 0.748 |
+| Cohen's d | -0.419 | 7.451 | 3.510 |
+| AUC-ROC | 0.373 | 0.993 | 0.974 |
+| Best F1 | 0.698 | 0.988 | 0.946 |
+| Cluster Purity | 0.839 | 0.986 | 0.912 |
 
 **Key Insights:**
-- LoRA achieved 96.9% of standard performance with only 0.32% trainable parameters (73K vs 22.7M)
-- Contrastive fine-tuning flipped inverted baseline embeddings: margin swung from -0.083 to +0.903 (total Δ = 0.986)
+- LoRA adapter merge bug **fixed** (2026-03-29): removed try/except fallback in `generate_finetuned_embeddings` — LoRA now always loads via base + PeftModel.from_pretrained + merge_and_unload
+- LoRA achieved 96.2% of standard Spearman with only 0.32% trainable parameters (73K vs 22.7M)
+- Contrastive fine-tuning flipped inverted baseline embeddings: margin swung from -0.083 to +0.941 (total Δ = 1.024)
 - LoRA required 10x higher learning rate (2e-4 vs 2e-5) to compensate for drastically reduced parameter count
 - Portfolio deliverable: comparison_report.html shows all 8 comparison charts with headline metrics card
 - PR #29 created with all deliverables, 124 tests at 94% coverage

@@ -22,23 +22,23 @@ I evaluated with 8 metrics (Spearman, margin, Cohen's d, AUC-ROC, F1, cluster pu
 
 **Standard fine-tuning** modified all 22.7M parameters (86.7 MB model). **LoRA** modified 73K parameters (0.32%) via rank-8 adapters on query/value layers, stored as a 0.28 MB adapter file.
 
-| Metric | Baseline | Standard Fine-Tuned |
-|--------|----------|-------------------|
-| Spearman | -0.219 | 0.853 |
-| Margin | -0.083 | +0.940 |
-| Cohen's d | -0.419 | 7.727 |
-| AUC-ROC | 0.373 | 0.994 |
-| Best F1 | 0.698 | 0.991 |
-| Cluster Purity | 0.839 | 0.986 |
-| False Positives | 137 | 3 |
+| Metric | Baseline | Standard Fine-Tuned | LoRA Fine-Tuned |
+|--------|----------|-------------------|-----------------|
+| Spearman | -0.219 | 0.852 | 0.820 |
+| Margin | -0.083 | +0.941 | +0.748 |
+| Cohen's d | -0.419 | 7.451 | 3.510 |
+| AUC-ROC | 0.373 | 0.993 | 0.974 |
+| Best F1 | 0.698 | 0.988 | 0.946 |
+| Cluster Purity | 0.839 | 0.986 | 0.912 |
+| False Positives | 137 | 3 | 17 |
 
-LoRA hit Spearman 0.827 during training (96.9% of standard). It needed 10x higher learning rate (2e-4 vs 2e-5) to compensate for the smaller parameter count. Without that adjustment, training stalled.
+LoRA achieved 96.2% of standard Spearman with 0.32% of trainable parameters. It needed 10x higher learning rate (2e-4 vs 2e-5) to compensate for the smaller parameter count. Without that adjustment, training stalled.
 
-### LoRA Adapter Merge Bug
+### LoRA Adapter Merge Bug (Resolved)
 
-LoRA's post-training evaluation produced baseline-identical metrics. The training curves (via SentenceTransformer's built-in evaluator) confirmed 0.827 on held-out data, so the model learned correctly. The bug is in the `PeftModel.from_pretrained` + `merge_and_unload` path in `generate_finetuned_embeddings`: adapter weights did not merge before encoding.
+The initial post-training evaluation produced baseline-identical metrics for LoRA. The training curves confirmed 0.827 Spearman on held-out data, so the model had learned correctly. The bug was in `generate_finetuned_embeddings`: the function tried to load the LoRA adapter directory directly as a `SentenceTransformer`, which succeeded silently but produced unmodified embeddings because adapter weights were never applied.
 
-This is a silent failure. The model runs without errors but produces unmodified embeddings. Standard fine-tuning (which modifies weights in-place) does not have this problem.
+The fix removed the `try/except` fallback and made LoRA always go through the correct path: load base model, apply adapter via `PeftModel.from_pretrained`, then call `merge_and_unload()` before encoding. The table above reflects the corrected LoRA evaluation.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/rubsj/ai-contrastive-embedding-finetuning/main/eval/visualizations/comparison/classification_metrics.png" alt="Baseline vs Fine-Tuned: All 8 Metrics" width="700"/>
@@ -58,7 +58,7 @@ The embedding space is clean, but a single vector similarity score still collaps
 
 The 8-metric suite works for a one-shot comparison. In a deployed system, embedding quality degrades as user profiles drift. I'm building a scheduled re-eval on a held-out sample that triggers retraining when metrics drop below thresholds.
 
-The LoRA adapter merge bug has a known fix: `merge_and_unload()` needs to be called on the PeftModel *before* passing it to the SentenceTransformer encoding path. I'm adding an integration test that compares adapter-merged output against standard fine-tuned output on a known input pair. If the cosine similarity between the two outputs drops below a threshold, the merge failed.
+The LoRA adapter merge bug is fixed. The evaluation table now includes the full 8-metric suite for both standard and LoRA models.
 
 For models larger than ~100M parameters, LoRA becomes the only practical option. The 10x learning rate scaling I found here is the starting point, but larger models need different ratios. Next round of experiments sweeps LR as a hyperparameter rather than hardcoding it.
 
@@ -138,7 +138,7 @@ Open `eval/comparison_report.html` to see results.
 - **One domain tested.** Dating compatibility profiles with clear category labels. On unstructured text (job descriptions, product reviews), the same contrastive approach may need more data or different loss functions.
 - **295 eval pairs.** Enough to show the inversion and confirm the fix, but confidence intervals are wide. Production evaluation needs 1,000+ pairs with human-verified labels.
 - **No hyperparameter sweep.** 4 epochs, batch 16, warmup 100 based on sentence-transformers defaults and one manual round of tuning. A proper sweep over learning rate, batch size, and epoch count likely finds a better configuration.
-- **LoRA eval is incomplete.** Training metrics confirm 0.827 Spearman, but post-training evaluation is blocked by the adapter merge bug. The LoRA comparison is based on training curves, not the full 8-metric suite.
+- **LoRA post-training eval slightly below training curves.** Training Spearman was 0.827; post-training eval on the same 295 pairs yields 0.820. Small difference expected from recomputation vs. the built-in evaluator's running average.
 - **Upstream-beats-downstream is one data point.** The pattern from P1 (fixing upstream beats downstream post-processing) held here too, but two projects is a hypothesis, not a trend.
 
 ---

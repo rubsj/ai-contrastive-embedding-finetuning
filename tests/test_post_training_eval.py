@@ -167,10 +167,12 @@ def test_generate_finetuned_embeddings_saves_npz(tmp_path: Path, monkeypatch: py
         assert data["text2"].shape == (5, 384)
 
 
-def test_generate_finetuned_embeddings_handles_lora_with_fallback(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test generate_finetuned_embeddings falls back to base+adapter loading for LoRA."""
-    # WHY: LoRA models may not be loadable directly as SentenceTransformer
-    from unittest.mock import MagicMock, patch
+def test_generate_finetuned_embeddings_lora_uses_merge_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test LoRA loading always uses base + PeftModel.from_pretrained + merge_and_unload."""
+    # WHY: The old try/except fallback silently loaded baseline weights when
+    # SentenceTransformer(lora_path) succeeded without applying adapters.
+    # The fix removes the fallback — LoRA always goes through merge_and_unload.
+    from unittest.mock import MagicMock, patch, call
     from src.post_training_eval import generate_finetuned_embeddings
 
     monkeypatch.chdir(tmp_path)
@@ -188,27 +190,17 @@ def test_generate_finetuned_embeddings_handles_lora_with_fallback(tmp_path: Path
 
     output_path = tmp_path / "lora_embeddings.npz"
 
-    # Mock LoRA loading scenario: first SentenceTransformer() fails, then base + PeftModel succeeds
     mock_model = MagicMock()
-    # WHY **kwargs: encode() accepts batch_size, show_progress_bar, etc.
     mock_model.encode.side_effect = lambda texts, **kwargs: np.random.randn(len(texts), 384).astype(np.float32)
+    mock_model.__getitem__ = MagicMock()
 
-    call_count = 0
+    mock_auto_model = MagicMock()
+    mock_transformer_module = MagicMock()
+    mock_transformer_module.auto_model = mock_auto_model
+    mock_model.__getitem__.return_value = mock_transformer_module
 
-    def mock_sentence_transformer(model_path):
-        nonlocal call_count
-        call_count += 1
-        if call_count == 1:
-            # First call (try direct load): raise exception to trigger fallback
-            raise Exception("Cannot load merged model")
-        else:
-            # Second call (base model load): succeed
-            return mock_model
-
-    # WHY patch sentence_transformers and peft: imports happen inside function
-    with patch("sentence_transformers.SentenceTransformer", side_effect=mock_sentence_transformer):
+    with patch("sentence_transformers.SentenceTransformer", return_value=mock_model) as mock_st:
         with patch("peft.PeftModel") as mock_peft:
-            # Mock PeftModel.from_pretrained to return mock that has merge_and_unload
             mock_adapter = MagicMock()
             mock_adapter.merge_and_unload.return_value = MagicMock()
             mock_peft.from_pretrained.return_value = mock_adapter
@@ -220,7 +212,16 @@ def test_generate_finetuned_embeddings_handles_lora_with_fallback(tmp_path: Path
                 is_lora=True,
             )
 
-    # Verify .npz created even with fallback loading
+            # WHY: SentenceTransformer must be called with the base model name,
+            # NOT the LoRA adapter path — that was the original bug
+            mock_st.assert_called_once_with("all-MiniLM-L6-v2")
+
+            # WHY: PeftModel.from_pretrained must be called to load adapters
+            mock_peft.from_pretrained.assert_called_once()
+
+            # WHY: merge_and_unload must be called to bake adapters into weights
+            mock_adapter.merge_and_unload.assert_called_once()
+
     assert output_path.exists()
 
 
@@ -262,6 +263,11 @@ def test_run_post_training_evaluation_creates_metrics_json(tmp_path: Path, monke
         ]
 
         with patch("sentence_transformers.SentenceTransformer"):
+          with patch("peft.PeftModel") as mock_peft:
+            mock_adapter = MagicMock()
+            mock_adapter.merge_and_unload.return_value = MagicMock()
+            mock_peft.from_pretrained.return_value = mock_adapter
+
             with patch("src.post_training_eval.evaluate_from_embeddings") as mock_eval:
                 # Return mock EvaluationBundle
                 from src.models import BaselineMetrics, EvaluationBundle
