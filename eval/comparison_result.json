@@ -440,148 +440,146 @@
     ]
   },
   "lora_finetuned": {
-    "compatible_mean_cosine": 0.49196508526802063,
-    "incompatible_mean_cosine": 0.574558675289154,
-    "compatibility_margin": -0.08259359002113342,
-    "cohens_d": -0.4190647006034851,
-    "t_statistic": -3.6374289989471436,
-    "p_value": 0.0003253858885727823,
-    "auc_roc": 0.3730019403122979,
-    "best_threshold": 0.0,
-    "best_f1": 0.6975717439293598,
-    "accuracy_at_best_threshold": 0.535593220338983,
-    "precision_at_best_threshold": 0.535593220338983,
-    "recall_at_best_threshold": 1.0,
-    "cluster_purity": 0.8104265402843602,
-    "n_clusters": 10,
-    "noise_ratio": 0.2847457627118644,
-    "spearman_correlation": -0.21941055833655765,
+    "compatible_mean_cosine": 0.8489567041397095,
+    "incompatible_mean_cosine": 0.10069888830184937,
+    "compatibility_margin": 0.7482578158378601,
+    "cohens_d": 3.510101795196533,
+    "t_statistic": 28.37114143371582,
+    "p_value": 0.0,
+    "auc_roc": 0.9743139610089624,
+    "best_threshold": 0.5,
+    "best_f1": 0.9457831325301205,
+    "accuracy_at_best_threshold": 0.9389830508474576,
+    "precision_at_best_threshold": 0.9022988505747126,
+    "recall_at_best_threshold": 0.9936708860759493,
+    "cluster_purity": 0.9120879120879121,
+    "n_clusters": 8,
+    "noise_ratio": 0.07457627118644068,
+    "spearman_correlation": 0.8194573308262778,
     "false_positive_counts": {
-      "dealbreaker": 45,
-      "incompatible": 45,
-      "llm_judged_incompatible": 28,
-      "complex_incompatible": 12,
-      "curated_realistic": 4,
-      "subtle_mismatch": 3
+      "llm_judged_incompatible": 11,
+      "subtle_mismatch": 3,
+      "curated_realistic": 2,
+      "complex_incompatible": 1
     },
     "category_metrics": [
       {
         "category": "dealbreakers",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.6550405621528625,
-        "margin": -0.6550405621528625,
+        "incompatible_mean": -0.05694021284580231,
+        "margin": 0.05694021284580231,
         "count": 45,
         "cohens_d": null
       },
       {
         "category": "dealbreakers_and_interests",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.5397422909736633,
-        "margin": -0.5397422909736633,
+        "incompatible_mean": 0.25291094183921814,
+        "margin": -0.25291094183921814,
         "count": 5,
         "cohens_d": null
       },
       {
         "category": "dealbreakers_and_values",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.48859894275665283,
-        "margin": -0.48859894275665283,
+        "incompatible_mean": 0.263084352016449,
+        "margin": -0.263084352016449,
         "count": 1,
         "cohens_d": null
       },
       {
         "category": "interests",
-        "compatible_mean": 0.40482741594314575,
-        "incompatible_mean": 0.43466562032699585,
-        "margin": -0.029838204383850098,
+        "compatible_mean": 0.8695894479751587,
+        "incompatible_mean": -0.027696438133716583,
+        "margin": 0.8972858861088753,
         "count": 62,
-        "cohens_d": -0.17150771617889404
+        "cohens_d": 7.7937188148498535
       },
       {
         "category": "interests_and_lifestyle",
-        "compatible_mean": 0.8388588428497314,
-        "incompatible_mean": 0.8545321226119995,
-        "margin": -0.015673279762268066,
+        "compatible_mean": 0.8072017431259155,
+        "incompatible_mean": 0.2893202304840088,
+        "margin": 0.5178815126419067,
         "count": 6,
-        "cohens_d": -0.2929600477218628
+        "cohens_d": 2.33394718170166
       },
       {
         "category": "interests_and_values",
-        "compatible_mean": 0.87525475025177,
-        "incompatible_mean": 0.8129452466964722,
-        "margin": 0.06230950355529785,
+        "compatible_mean": 0.8398209810256958,
+        "incompatible_mean": 0.490068256855011,
+        "margin": 0.3497527241706848,
         "count": 5,
         "cohens_d": null
       },
       {
         "category": "lifestyle",
-        "compatible_mean": 0.39941245317459106,
-        "incompatible_mean": 0.3675519824028015,
-        "margin": 0.03186047077178955,
+        "compatible_mean": 0.8464693427085876,
+        "incompatible_mean": 0.05518840253353119,
+        "margin": 0.7912809401750565,
         "count": 71,
-        "cohens_d": 0.18445873260498047
+        "cohens_d": 3.9925060272216797
       },
       {
         "category": "lifestyle_and_dealbreakers",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.47100377082824707,
-        "margin": -0.47100377082824707,
+        "incompatible_mean": 0.05862579494714737,
+        "margin": -0.05862579494714737,
         "count": 1,
         "cohens_d": null
       },
       {
         "category": "lifestyle_and_interests",
-        "compatible_mean": 0.8390640020370483,
-        "incompatible_mean": 0.781767725944519,
-        "margin": 0.0572962760925293,
+        "compatible_mean": 0.6919430494308472,
+        "incompatible_mean": 0.356403648853302,
+        "margin": 0.33553940057754517,
         "count": 7,
-        "cohens_d": 0.4377591907978058
+        "cohens_d": 1.837485671043396
       },
       {
         "category": "lifestyle_and_values",
-        "compatible_mean": 0.5554577708244324,
-        "incompatible_mean": 0.665298342704773,
-        "margin": -0.10984057188034058,
+        "compatible_mean": 0.8460376858711243,
+        "incompatible_mean": 0.5831432342529297,
+        "margin": 0.2628944516181946,
         "count": 36,
-        "cohens_d": -0.9453862905502319
+        "cohens_d": 1.4049099683761597
       },
       {
         "category": "realistic_example",
-        "compatible_mean": 0.7196243405342102,
-        "incompatible_mean": 0.6560598015785217,
-        "margin": 0.06356453895568848,
+        "compatible_mean": 0.5609483122825623,
+        "incompatible_mean": 0.4017903208732605,
+        "margin": 0.15915799140930176,
         "count": 5,
         "cohens_d": null
       },
       {
         "category": "values",
-        "compatible_mean": 0.5419114828109741,
-        "incompatible_mean": 0.4724651873111725,
-        "margin": 0.06944629549980164,
+        "compatible_mean": 0.8081853985786438,
+        "incompatible_mean": -0.09760025143623352,
+        "margin": 0.9057856500148773,
         "count": 24,
-        "cohens_d": 0.39029818773269653
+        "cohens_d": 10.018411636352539
       },
       {
         "category": "values_and_dealbreakers",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.3830002546310425,
-        "margin": -0.3830002546310425,
+        "incompatible_mean": 0.35911697149276733,
+        "margin": -0.35911697149276733,
         "count": 1,
         "cohens_d": null
       },
       {
         "category": "values_and_interests",
-        "compatible_mean": 0.6117544770240784,
-        "incompatible_mean": 0.7805255055427551,
-        "margin": -0.16877102851867676,
+        "compatible_mean": 0.8818466067314148,
+        "incompatible_mean": 0.18589355051517487,
+        "margin": 0.6959530562162399,
         "count": 23,
-        "cohens_d": -0.9332155585289001
+        "cohens_d": 13.365811347961426
       },
       {
         "category": "values_and_lifestyle",
-        "compatible_mean": 0.829670250415802,
-        "incompatible_mean": 0.8835393190383911,
-        "margin": -0.05386906862258911,
+        "compatible_mean": 0.8159453272819519,
+        "incompatible_mean": 0.09522949159145355,
+        "margin": 0.7207158356904984,
         "count": 3,
         "cohens_d": null
       }
@@ -589,75 +587,75 @@
     "pair_type_metrics": [
       {
         "category": "compatible",
-        "compatible_mean": 0.509955644607544,
+        "compatible_mean": 0.8450509309768677,
         "incompatible_mean": 0.0,
-        "margin": 0.509955644607544,
+        "margin": 0.8450509309768677,
         "count": 60,
         "cohens_d": null
       },
       {
         "category": "complex_compatible",
-        "compatible_mean": 0.8511794209480286,
+        "compatible_mean": 0.8290450572967529,
         "incompatible_mean": 0.0,
-        "margin": 0.8511794209480286,
+        "margin": 0.8290450572967529,
         "count": 18,
         "cohens_d": null
       },
       {
         "category": "complex_incompatible",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.8591062426567078,
-        "margin": -0.8591062426567078,
+        "incompatible_mean": 0.251039057970047,
+        "margin": -0.251039057970047,
         "count": 12,
         "cohens_d": null
       },
       {
         "category": "curated_realistic",
-        "compatible_mean": 0.7196243405342102,
-        "incompatible_mean": 0.6560598015785217,
-        "margin": 0.06356453895568848,
+        "compatible_mean": 0.5609483122825623,
+        "incompatible_mean": 0.4017903208732605,
+        "margin": 0.15915799140930176,
         "count": 5,
         "cohens_d": null
       },
       {
         "category": "dealbreaker",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.6550405621528625,
-        "margin": -0.6550405621528625,
+        "incompatible_mean": -0.05694021284580231,
+        "margin": 0.05694021284580231,
         "count": 45,
         "cohens_d": null
       },
       {
         "category": "incompatible",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.41169264912605286,
-        "margin": -0.41169264912605286,
+        "incompatible_mean": -0.08511316031217575,
+        "margin": 0.08511316031217575,
         "count": 45,
         "cohens_d": null
       },
       {
         "category": "llm_judged_compatible",
-        "compatible_mean": 0.5310447216033936,
+        "compatible_mean": 0.8585953116416931,
         "incompatible_mean": 0.0,
-        "margin": 0.5310447216033936,
+        "margin": 0.8585953116416931,
         "count": 32,
         "cohens_d": null
       },
       {
         "category": "llm_judged_incompatible",
         "compatible_mean": 0.0,
-        "incompatible_mean": 0.5932058095932007,
-        "margin": -0.5932058095932007,
+        "incompatible_mean": 0.4651767313480377,
+        "margin": -0.4651767313480377,
         "count": 28,
         "cohens_d": null
       },
       {
         "category": "subtle_mismatch",
-        "compatible_mean": 0.2999758720397949,
-        "incompatible_mean": 0.38942477107048035,
-        "margin": -0.08944889903068542,
+        "compatible_mean": 0.8611335754394531,
+        "incompatible_mean": 0.8478572964668274,
+        "margin": 0.013276278972625732,
         "count": 50,
-        "cohens_d": -1.16446053981781
+        "cohens_d": 0.16708683967590332
       }
     ]
   },

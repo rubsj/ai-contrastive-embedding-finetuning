@@ -96,24 +96,20 @@ def generate_finetuned_embeddings(
     print(f"Loading model from {model_path} (is_lora={is_lora})...")
 
     if is_lora:
-        # LoRA loading with try/except fallback (Correction #1)
-        try:
-            # Try loading as merged SentenceTransformer first
-            model = SentenceTransformer(model_path)
-            print("  → Loaded as merged SentenceTransformer")
-        except Exception as e:
-            print(f"  → Merged loading failed ({e}), trying adapter fallback...")
-            # Fallback: load base + apply LoRA adapter + merge
-            from peft import PeftModel
+        # WHY always use base+adapter+merge: loading the LoRA adapter directory
+        # directly as SentenceTransformer succeeds silently but produces baseline
+        # embeddings because adapter weights are never applied. The only correct
+        # path is to load the base model, apply the adapter, then merge.
+        from peft import PeftModel
 
-            base = SentenceTransformer("all-MiniLM-L6-v2")
-            base[0].auto_model = PeftModel.from_pretrained(
-                base[0].auto_model,
-                model_path,
-            )
-            base[0].auto_model = base[0].auto_model.merge_and_unload()
-            model = base
-            print("  → Loaded via base + adapter + merge")
+        base = SentenceTransformer("all-MiniLM-L6-v2")
+        base[0].auto_model = PeftModel.from_pretrained(
+            base[0].auto_model,
+            model_path,
+        )
+        base[0].auto_model = base[0].auto_model.merge_and_unload()
+        model = base
+        print("  → Loaded via base + adapter + merge")
     else:
         # Standard model: direct SentenceTransformer load
         model = SentenceTransformer(model_path)

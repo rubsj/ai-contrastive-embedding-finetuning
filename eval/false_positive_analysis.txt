@@ -6,15 +6,15 @@ Comparison of false positive counts across baseline, standard fine-tuned, and Lo
 
 | Pair Type | Baseline | Standard | LoRA | Std Reduction | LoRA Reduction |
 |-----------|----------|----------|------|---------------|----------------|
-| complex_incompatible |       12 |        0 |   12 |         100.0% |            0.0% |
-| curated_realistic |        4 |        1 |    4 |          75.0% |            0.0% |
-| dealbreaker |       45 |        0 |   45 |         100.0% |            0.0% |
-| incompatible |       45 |        0 |   45 |         100.0% |            0.0% |
-| llm_judged_incompatible |       28 |        0 |   28 |         100.0% |            0.0% |
+| complex_incompatible |       12 |        0 |    1 |         100.0% |           91.7% |
+| curated_realistic |        4 |        1 |    2 |          75.0% |           50.0% |
+| dealbreaker |       45 |        0 |    0 |         100.0% |          100.0% |
+| incompatible |       45 |        0 |    0 |         100.0% |          100.0% |
+| llm_judged_incompatible |       28 |        0 |   11 |         100.0% |           60.7% |
 | subtle_mismatch |        3 |        3 |    3 |           0.0% |            0.0% |
 
 ## Overall Totals
 
 - **Baseline**: 137 false positives
 - **Standard**: 4 false positives (97.1% reduction)
-- **LoRA**: 137 false positives (0.0% reduction)
+- **LoRA**: 17 false positives (87.6% reduction)
