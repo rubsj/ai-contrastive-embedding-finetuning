@@ -65,7 +65,7 @@ For models larger than ~100M parameters, LoRA becomes the only practical option.
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[1,475 Training Pairs<br/>295 Eval Pairs] --> B[Data Loader]
     B --> C{Training Mode}
 
