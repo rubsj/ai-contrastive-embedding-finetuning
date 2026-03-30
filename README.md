@@ -1,6 +1,6 @@
 # P3: Contrastive Embedding Fine-Tuning
 
-I fine-tuned `all-MiniLM-L6-v2` on 1,475 dating profile pairs and flipped Spearman from -0.22 to +0.85. LoRA got 96.9% of that using 0.32% of the parameters. 3 ADRs, 112 tests, 8 evaluation charts.
+I fine-tuned `all-MiniLM-L6-v2` on 1,475 dating profile pairs and flipped Spearman from -0.22 to +0.85. LoRA got 96.2% of that using 0.32% of the parameters. 3 ADRs, 112 tests, 8 evaluation charts.
 
 ![License](https://img.shields.io/badge/License-MIT-green)
 
