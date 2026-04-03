@@ -1,6 +1,6 @@
 # CLAUDE.md — P3: Contrastive Embedding Fine-Tuning
 
-> **Read this file + PRD.md at the start of EVERY session.**
+> **Read this file + docs/PRD.md at the start of EVERY session.**
 > This is your persistent memory across sessions. Update the "Current State" section before ending each session.
 
 ---
@@ -10,8 +10,8 @@
 - **Project:** P3 — Contrastive Embedding Fine-Tuning (Dating Compatibility)
 - **Location:** `03-fine-tuning-guardrails/` within `ai-portfolio` monorepo
 - **Timeline:** Feb 18–20, 2026 (3 sessions × 4h = 12h)
-- **PRD:** `PRD.md` in this directory — the implementation contract
-- **Concepts Primer:** `p3-concepts-primer.html` in project root — read for contrastive learning, LoRA, UMAP, HDBSCAN theory
+- **PRD:** `docs/PRD.md` — the implementation contract
+- **Concepts Primer:** `docs/learning/concepts-primer.html` — read for contrastive learning, LoRA, UMAP, HDBSCAN theory
 
 ---
 
@@ -36,7 +36,7 @@ This project uses the **Opus-plans, Sonnet-executes** workflow:
 ### Session Workflow
 ```
 1. Switch to Opus
-2. "Read CLAUDE.md and PRD.md. Today is Day [N]. Plan tasks T[X.Y] through T[X.Z]."
+2. "Read CLAUDE.md and docs/PRD.md. Today is Day [N]. Plan tasks T[X.Y] through T[X.Z]."
 3. Opus produces: file-by-file plan, function signatures, key logic, validation criteria
 4. Switch to Sonnet
 5. "Execute the plan. Start with [first file]."
@@ -286,7 +286,7 @@ cp <path-to-uploads>/eval_pairs_metadata.json data/raw/
 
 ### Starting a session (Opus):
 ```
-Read CLAUDE.md and PRD.md. Today is Day [N].
+Read CLAUDE.md and docs/PRD.md. Today is Day [N].
 Here's where I left off: [paste handoff from previous session]
 Create an implementation plan for tasks T[N.X] through T[N.Y] from PRD Section 9.
 For each task, specify: files to create/modify, key functions, input/output, validation criteria.
@@ -421,7 +421,7 @@ Reference these from completed projects when implementing P3:
 
 ## Key Concepts Quick Reference
 
-(For deep explanation, read `p3-concepts-primer.html`)
+(For deep explanation, read `docs/learning/concepts-primer.html`)
 
 - **Contrastive learning:** Train with pairs — pull compatible closer, push incompatible apart. Like sorting by a custom comparator.
 - **CosineSimilarityLoss:** Loss function mapping label=1 → cosine sim 1.0, label=0 → 0.0. Gradients reshape the embedding space.

@@ -1,13 +1,13 @@
 # PRD: P3 — Contrastive Embedding Fine-Tuning
 
-> **This is the implementation contract.** Claude Code: read this + both CLAUDE.md files before starting.
+> **This is the implementation contract.** Claude Code: read this + both ../CLAUDE.md files before starting.
 > Do NOT re-debate architecture decisions. They are final. If something is ambiguous, ask the user.
 
 **Project:** P3 — Contrastive Embedding Fine-Tuning (Dating Compatibility)
 **Timeline:** Feb 18–20, 2026 (Tue–Thu, 3 sessions × 4h = 12h)
 **Owner:** Developer (Java/TS background, completed P1 + P2)
 **Source of Truth:** [Notion Requirements](https://www.notion.so/Mini_Project_3_Requirements-2ffdb630640a810cbfe5d23c33ee97c0)
-**Concepts Primer:** `p3-concepts-primer.html` in project root — read for contrastive learning, LoRA, UMAP, HDBSCAN theory
+**Concepts Primer:** `learning/concepts-primer.html` — read for contrastive learning, LoRA, UMAP, HDBSCAN theory
 **PRD Version:** v1
 
 ---
@@ -721,7 +721,7 @@ RULE 5: For LoRA comparison, load base model + adapter separately.
 Each session starts by telling Claude Code:
 
 ```
-Read CLAUDE.md and PRD.md. Today is Day [N].
+Read ../CLAUDE.md and PRD.md. Today is Day [N].
 Here's where I left off: [checkpoint from yesterday]
 Focus on tasks [#X through #Y] from the PRD.
 ```
