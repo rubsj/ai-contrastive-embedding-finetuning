@@ -6,102 +6,28 @@
 
 ## Context
 
-QLoRA (Quantized Low-Rank Adaptation) extends LoRA by quantizing the base model to 4-bit precision, enabling fine-tuning of large models (7B+ parameters) on consumer hardware. For our `all-MiniLM-L6-v2` fine-tuning project (22.7M parameters), we must decide whether to use QLoRA instead of standard LoRA.
-
-**QLoRA Benefits:**
-- 4-bit quantization reduces memory by ~75% (vs. fp16 baseline)
-- Enables fine-tuning 7B–65B models on single 24GB GPU
-- Minimal performance degradation (96-99% of full fine-tuning)
-
-**Our Constraints:**
-- Model size: 22.7M parameters (tiny compared to 7B+)
-- Hardware: M2 Mac (8GB unified memory, no CUDA)
-- Memory usage: Standard LoRA already fits comfortably in 8GB
+QLoRA (Quantized Low-Rank Adaptation) extends LoRA by quantizing the base model to 4-bit precision, which cuts memory by roughly 75% and enables fine-tuning 7B+ parameter models on consumer hardware. For this project I'm fine-tuning `all-MiniLM-L6-v2` (22.7M parameters) on an M2 Mac with 8GB unified memory. Standard LoRA already fits comfortably in that budget (ADR-001), so the question is whether QLoRA adds anything here.
 
 ## Decision
 
-**Skip QLoRA for this project.** Use standard LoRA (fp32 weights + fp32 adapters) instead.
+I skipped QLoRA for this project and used standard LoRA (fp32 weights + fp32 adapters) instead.
 
-**Rationale:**
-1. **CUDA dependency**: QLoRA requires `bitsandbytes` library, which depends on CUDA. M2 Mac uses Metal, not CUDA.
-2. **Model too small**: 22.7M parameters fit easily in 8GB RAM. QLoRA's memory savings (75%) are unnecessary — we're not memory-constrained.
-3. **Complexity cost**: QLoRA adds quantization logic, calibration data requirements, and potential numerical instability for minimal benefit.
-4. **Performance risk**: 4-bit quantization could degrade 22M model more than 7B+ models (fewer parameters → less redundancy to absorb quantization errors).
+The primary blocker is hardware: QLoRA requires `bitsandbytes`, which depends on CUDA. The M2 Mac uses Metal, not CUDA, so QLoRA is not runnable on this hardware without switching to a cloud GPU. Beyond that, the model is too small to benefit. 22.7M parameters fit easily in 8GB RAM, so QLoRA's 75% memory savings solve a problem I don't have. Adding quantization logic, calibration data requirements, and potential numerical instability for a 22M model is complexity with no payoff. There's also a performance risk: 4-bit quantization could degrade a 22M model more than a 7B+ model, since fewer parameters means less redundancy to absorb quantization errors.
 
 ## Alternatives Considered
 
-| Approach | Pros | Cons | Decision |
-|----------|------|------|----------|
-| **QLoRA (4-bit + LoRA)** | ✅ Extreme memory efficiency<br>✅ Proven on 7B–65B models | ❌ Requires CUDA (M2 Mac incompatible)<br>❌ Overkill for 22M model<br>❌ Adds quantization complexity | ❌ Skip |
-| **Standard LoRA (fp32)** | ✅ Works on M2 Mac (Metal)<br>✅ Simpler implementation<br>✅ No quantization overhead | ❌ Higher memory than QLoRA (but still fits in 8GB) | ✅ Use |
-| **8-bit quantization** | ✅ Less extreme than 4-bit<br>✅ Better precision | ❌ Still requires bitsandbytes (CUDA)<br>❌ Unnecessary for 22M model | ❌ Skip |
-| **Standard fine-tuning (fp32)** | ✅ Maximum performance<br>✅ No adapters | ❌ 77x more trainable params than LoRA<br>❌ Slower training | ❌ Use only for baseline comparison |
+**QLoRA (4-bit + LoRA)** - Extreme memory efficiency, proven on 7B to 65B models. But it requires CUDA (incompatible with M2 Mac), is overkill for a 22M model, and adds quantization complexity for no benefit at this scale.
 
-## When to Revisit QLoRA
+**8-bit quantization** - Less extreme than 4-bit with better precision. But it still requires bitsandbytes and CUDA, so the same hardware blocker applies. Unnecessary for a 22M model.
 
-QLoRA becomes compelling when:
-1. **Model size ≥ 7B parameters** — Standard LoRA memory usage exceeds available RAM
-2. **CUDA hardware available** — AWS/GCP GPU instances, NVIDIA consumer GPUs
-3. **Multi-adapter serving** — Need to hot-swap adapters with minimal base model memory
+**Standard fine-tuning (fp32)** - Maximum performance with no adapters. Used as the baseline comparison in ADR-001. 77x more trainable parameters than LoRA and slower training, but no adapter overhead.
 
-**Example thresholds:**
-- 7B model (fp16): ~14GB base model + ~2GB LoRA adapters → 16GB total (exceeds M2 Mac 8GB)
-- 7B model (4-bit QLoRA): ~3.5GB base model + ~2GB adapters → 5.5GB total (fits in M2 Mac)
+## Quantified Validation
 
-For P5 (Production RAG) or P6 (Digital Clone), if we fine-tune 7B+ models, revisit QLoRA with CUDA runtime (Docker container or cloud GPU).
+The memory math makes the case clearly. A 7B model in fp16 needs roughly 14GB for the base model plus 2GB for LoRA adapters, totaling 16GB, which exceeds M2 Mac's 8GB. The same 7B model with 4-bit QLoRA drops to roughly 3.5GB base plus 2GB adapters, totaling 5.5GB, which fits. For the 22.7M model in this project, standard LoRA uses a fraction of the available 8GB. QLoRA's compression is solving for a constraint that doesn't exist here.
 
 ## Consequences
 
-### What becomes easier:
-- **M2 Mac compatibility**: No CUDA dependency, native Metal support via PyTorch MPS backend
-- **Simpler debugging**: No quantization numerical issues to troubleshoot
-- **Faster iteration**: Skip calibration data preparation and quantization overhead
+No CUDA dependency means the project runs natively on M2 Mac via PyTorch MPS backend. No quantization numerical issues to debug, and no calibration data to prepare. Iteration stays fast.
 
-### What becomes harder:
-- **Scaling to larger models**: If we later want to fine-tune 7B+ models locally, M2 Mac 8GB RAM will be insufficient
-- **Cloud GPU costs**: Future projects requiring 7B+ fine-tuning must use cloud GPUs (AWS p3.2xlarge ~$3/hr)
-
-## Java/TypeScript Parallel
-
-QLoRA quantization is like **lossy compression** in image processing:
-
-```java
-// Standard LoRA = Store weights in full precision (like PNG)
-class StandardLoRA {
-    float[] weights;  // 32-bit floats (4 bytes per weight)
-}
-
-// QLoRA = Store weights in 4-bit quantized format (like JPEG)
-class QLoRA {
-    byte[] quantizedWeights;  // 4 bits per weight (8x compression)
-    float[] scaleFactors;     // Dequantization metadata
-
-    float[] dequantize() {
-        // Lossy decompression: some precision lost, but 75% memory saved
-        return applyScaleFactors(quantizedWeights);
-    }
-}
-```
-
-**Trade-off:**
-- PNG: lossless, larger file, pixel-perfect
-- JPEG: lossy, 75% smaller, visually similar (but not identical)
-
-**When to use JPEG (QLoRA):**
-- Large images (7B+ params) that don't fit in RAM
-- Acceptable quality loss (96-99% of original)
-
-**When to use PNG (standard LoRA):**
-- Small images (22M params) that fit easily in RAM
-- Need pixel-perfect quality (no quantization loss)
-
-## References
-
-- [QLoRA: Efficient Finetuning of Quantized LLMs (Dettmers et al., 2023)](https://arxiv.org/abs/2305.14314)
-- [bitsandbytes: 8-bit & 4-bit Quantization](https://github.com/TimDettmers/bitsandbytes)
-- ADR-001: LoRA vs. Standard Fine-Tuning
-- ADR-003: CosineSimilarityLoss Selection
-
-## Update Log
-
-- **2026-02-20**: Initial version — QLoRA deferred until 7B+ models
+If a future project fine-tunes 7B+ models locally, M2 Mac's 8GB will be insufficient and QLoRA (or a cloud GPU) becomes necessary. That tradeoff is worth revisiting when the model size actually demands it. (This is similar to choosing PNG over JPEG for small images: lossless is the right call when the file already fits in memory, and lossy compression only matters when it doesn't.)
